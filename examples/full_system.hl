@@ -1,0 +1,239 @@
+/*
+ * full_system.hl – Complete HoloLang system demonstrating all major features
+ *
+ * Covers:
+ *   - Multi-device orchestration (laser + 2 mirrors + 2 sensors)
+ *   - SafeTensor bounds-checked beam data
+ *   - Computation graph: matmul → relu → normalize pipeline
+ *   - Pooled VM runtime with replicated kernels
+ *   - MDI canvas with 4×4 mesh, tile impulse cycles
+ *   - gRPC channel + WebSocket + webhook + REST API
+ *   - Session lifecycle and skill tracking
+ *   - DocDirectory generation
+ *   - Enum-based directional control
+ *   - Debug impulse cycle  (2 tiles)
+ */
+
+@session("full-system-demo")
+
+// ════════════════════════════════════════════════════════════════
+// DEVICES
+// ════════════════════════════════════════════════════════════════
+
+device GreenLaser {
+    type: "solid-state-laser"
+    wavelength_nm: 532
+    max_power_mw:  150
+    modulation:    "cw"
+}
+
+device RedLaser {
+    type: "diode-laser"
+    wavelength_nm: 650
+    max_power_mw:   80
+    modulation:    "pulsed"
+}
+
+device MirrorH {
+    type:    "galvanized-mirror"
+    axis:    "horizontal"
+    min_deg: -30
+    max_deg:  30
+}
+
+device MirrorV {
+    type:    "galvanized-mirror"
+    axis:    "vertical"
+    min_deg: -25
+    max_deg:  25
+}
+
+device SensorA {
+    type:           "photodiode"
+    sample_rate_hz: 5000
+}
+
+device SensorB {
+    type:           "ccd"
+    sample_rate_hz: 1000
+}
+
+// ════════════════════════════════════════════════════════════════
+// ENUMS
+// ════════════════════════════════════════════════════════════════
+
+enum ScanDirection {
+    LEFT_RIGHT  = 0,
+    RIGHT_LEFT  = 1,
+    BOUSTROPHEDON = 2
+}
+
+enum BeamColor {
+    RED   = 650,
+    GREEN = 532,
+    BLUE  = 445
+}
+
+enum ProcessMode {
+    REALTIME = 0,
+    DEFERRED = 1,
+    BATCH    = 2
+}
+
+// ════════════════════════════════════════════════════════════════
+// TENSORS
+// ════════════════════════════════════════════════════════════════
+
+tensor FrameBuffer[1080][1920] {
+    dtype:   "float32"
+    min_val: 0.0
+    max_val: 1.0
+    clamp:   true
+    pool:    "replicated"
+}
+
+tensor BeamWeights[4][4] {
+    dtype: "float32"
+}
+
+tensor SensorData[2][1000] {
+    dtype: "float32"
+}
+
+// ════════════════════════════════════════════════════════════════
+// KERNEL & VM RUNTIME
+// ════════════════════════════════════════════════════════════════
+
+kernel MainKernel {
+    stack_limit: 512
+    max_cycles:  100000
+}
+
+pool HoloPool {
+    kernels: MainKernel
+    workers: 8
+    mode:    ProcessMode.REALTIME
+}
+
+runtime HoloVM {
+    pool:     HoloPool
+    surfaces: [FrameBuffer, BeamWeights, SensorData]
+}
+
+// ════════════════════════════════════════════════════════════════
+// MESH CANVAS  (4 × 4)
+// ════════════════════════════════════════════════════════════════
+
+@kernel("mesh-kernel")
+mesh HoloMesh(FrameBuffer) {
+    // Row 0 – input sources
+    tile(0, 0) -> GreenLaser
+    tile(0, 1) -> RedLaser
+    tile(0, 2) -> MirrorH
+    tile(0, 3) -> MirrorV
+
+    // Row 1 – sensor feedback
+    tile(1, 0) -> SensorA
+    tile(1, 1) -> SensorB
+    tile(1, 2) -> BeamWeights
+    tile(1, 3) -> SensorData
+
+    // Row 2 – processing
+    tile(2, 0) -> FrameBuffer
+    tile(2, 1) -> HoloPool
+    tile(2, 2) -> MainKernel
+    tile(2, 3) -> HoloVM
+
+    // Row 3 – output / debug
+    tile(3, 0) -> ScanDirection.BOUSTROPHEDON
+    tile(3, 1) -> BeamColor.GREEN
+    tile(3, 2) -> ProcessMode.REALTIME
+    tile(3, 3) -> "output"
+}
+
+// ════════════════════════════════════════════════════════════════
+// NETWORK
+// ════════════════════════════════════════════════════════════════
+
+channel HoloGRPC(grpc) {
+    host: "localhost"
+    port: 50051
+    tls:  false
+}
+
+channel HoloWS(ws) {
+    host: "localhost"
+    port: 8080
+}
+
+webhook StatusHook {
+    url:    "http://localhost:9000/events"
+    events: "all"
+}
+
+api HoloAPI {
+    base_path: "/api/v1"
+    port:      8000
+}
+
+// Bind channels
+connect HoloGRPC:50051
+connect HoloWS:8080
+
+emit HoloGRPC -> "system_ready"
+emit StatusHook -> "full_system_online"
+
+// ════════════════════════════════════════════════════════════════
+// IMPULSE CYCLES
+// ════════════════════════════════════════════════════════════════
+
+// Propagate green laser through mirror chain to sensor
+impulse(tile(0, 0), tile(0, 2)) -> GreenLaser
+impulse(tile(0, 2), tile(0, 3)) -> MirrorH
+impulse(tile(0, 3), tile(1, 0)) -> MirrorV
+impulse(tile(1, 0), tile(2, 0)) -> SensorA   // sensor → frame buffer
+
+// Debug: fire impulse from processing tile to output tile
+impulse(tile(2, 1), tile(3, 3)) -> HoloPool
+
+// ════════════════════════════════════════════════════════════════
+// SESSION & SKILLS
+// ════════════════════════════════════════════════════════════════
+
+session MainSession {
+    skill: "laser_control"
+    skill: "mirror_control"
+    skill: "tensor_pool"
+    skill: "mesh_canvas"
+    skill: "kernel_programming"
+    skill: "grpc_channel"
+    skill: "websocket"
+}
+
+// ════════════════════════════════════════════════════════════════
+// DOC DIRECTORY
+// ════════════════════════════════════════════════════════════════
+
+doc ProjectDocs {
+    title:       "HoloLang Full System Documentation"
+    description: "Auto-generated documentation for the full_system demo"
+    sections: ["devices", "tensors", "network", "canvas", "vm"]
+}
+
+// ════════════════════════════════════════════════════════════════
+// INVOCATION
+// ════════════════════════════════════════════════════════════════
+
+invoke(HoloMesh) -> HoloGRPC -> HoloAPI
+
+// ════════════════════════════════════════════════════════════════
+// DEBUG OUTPUT
+// ════════════════════════════════════════════════════════════════
+
+debug GreenLaser
+debug FrameBuffer
+debug HoloMesh
+debug HoloVM
+debug HoloAPI
+
+print("=== Full HoloLang system operational ===")

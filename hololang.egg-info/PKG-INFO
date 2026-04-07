@@ -1,0 +1,31 @@
+Metadata-Version: 2.4
+Name: hololang
+Version: 0.1.0
+Summary: HoloLang – a custom domain-specific language for holographic device control, tensor processing, and light-manipulation automation
+Author: HoloLang Project
+License: MIT
+Keywords: holography,laser,galvanized-mirror,tensor,dsl,machine-learning,grpc,websocket,mesh,virtual-machine
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Physics
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Provides-Extra: network
+Requires-Dist: websockets>=12.0; extra == "network"
+Requires-Dist: grpcio>=1.60.0; extra == "network"
+Requires-Dist: grpcio-tools>=1.60.0; extra == "network"
+Requires-Dist: aiohttp>=3.9.0; extra == "network"
+Provides-Extra: tensor
+Requires-Dist: numpy>=1.26.0; extra == "tensor"
+Provides-Extra: all
+Requires-Dist: hololang[network,tensor]; extra == "all"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"
+
+# szalony-pomylony-pomys-owy-przemyslnik2i3-4

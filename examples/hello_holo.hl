@@ -1,0 +1,53 @@
+/*
+ * hello_holo.hl – HoloLang "Hello, World!" for holographic devices
+ *
+ * This minimal example shows the key language constructs:
+ *   - Device declarations
+ *   - Tensor creation
+ *   - Enum definitions
+ *   - Mesh canvas with tile impulses
+ *   - print / debug statements
+ */
+
+// 1.  Session annotation – tag this execution
+@session("hello-demo")
+
+// 2.  Define beam wavelength types
+enum BeamType {
+    LASER_RED   = 650,
+    LASER_GREEN = 532,
+    LASER_BLUE  = 445,
+    VISIBLE_WHITE = 550
+}
+
+// 3.  Declare the holographic projector device
+device Projector {
+    type: "galvanized-laser"
+    channels: 3
+    resolution_x: 1920
+    resolution_y: 1080
+}
+
+// 4.  Create a 2-D beam-intensity tensor  (height × width)
+tensor BeamMatrix[4][4] {
+    dtype: "float32"
+    pool: "replicated"
+}
+
+// 5.  Build a small mesh canvas
+@kernel("primary")
+mesh HoloCanvas(BeamMatrix) {
+    // Wire four tiles in a ring
+    tile(0, 0) -> BeamType.LASER_RED
+    tile(0, 1) -> BeamType.LASER_GREEN
+    tile(1, 0) -> BeamType.LASER_BLUE
+    tile(1, 1) -> BeamType.VISIBLE_WHITE
+}
+
+// 6.  Invoke the projector via the canvas
+invoke(HoloCanvas)
+
+// 7.  Output greeting
+print("Hello, Holographic World!")
+debug Projector
+debug BeamMatrix
