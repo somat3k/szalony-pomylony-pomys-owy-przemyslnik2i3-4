@@ -207,6 +207,9 @@ class Token:
 # ---------------------------------------------------------------------------
 
 _IDENT_RE      = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+# Float regex: decimal form (digits.digits, NOT followed by another dot)
+# OR scientific notation (digits[eE]±digits).  The negative lookahead (?!\.)
+# prevents "0..10" from being consumed as float 0.0 followed by member access.
 _FLOAT_RE      = re.compile(r"\d+\.(?!\.)(\d*)([eE][+-]?\d+)?(?=\D|$)|\d+[eE][+-]?\d+")
 _INT_RE        = re.compile(r"0x[0-9A-Fa-f]+|0b[01]+|0o[0-7]+|\d+")
 _STRING_RE     = re.compile(r'"(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'')

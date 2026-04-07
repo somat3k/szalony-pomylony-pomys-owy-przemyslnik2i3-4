@@ -56,7 +56,7 @@ class SkillRegistry:
     def _populate_defaults(self) -> None:
         defaults = [
             ("laser_control",      "Control laser beam parameters",          "device",        1),
-            ("mirror_control",     "Configure galvanised mirror angles",      "device",        1),
+            ("mirror_control",     "Configure galvanized mirror angles",      "device",        1),
             ("sensor_reading",     "Read and interpret sensor data",          "device",        1),
             ("tensor_basics",      "Create and manipulate tensors",           "tensor",        1),
             ("tensor_graph",       "Build computation graphs",                "tensor",        2),
