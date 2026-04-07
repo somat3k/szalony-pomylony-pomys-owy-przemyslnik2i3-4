@@ -1,2 +1,0 @@
-[console_scripts]
-hololang = hololang.cli:main
