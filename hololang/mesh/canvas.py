@@ -137,14 +137,14 @@ class Canvas:
             lines.append(f"{r:3} |" + " ".join(row_cells))
         return "\n".join(lines)
 
-    def to_json(self) -> str:
+    def to_json(self, indent: int = 2) -> str:
         return json.dumps(
             {
                 "name":   self.name,
                 "tiles":  [t.to_dict() for t in self._tiles.values()],
                 "cycles": self._cycle_count,
             },
-            indent=2,
+            indent=indent,
         )
 
     def __repr__(self) -> str:

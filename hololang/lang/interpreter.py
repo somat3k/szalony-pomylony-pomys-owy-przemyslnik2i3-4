@@ -123,10 +123,10 @@ class Environment:
     def assign(self, name: str, value: Any) -> None:
         if name in self._vars:
             self._vars[name] = value
-        elif self._parent is not None:
+        elif self._parent is not None and name in self._parent:
             self._parent.assign(name, value)
         else:
-            # Auto-define at global scope
+            # Define in the current scope when no existing binding is found.
             self._vars[name] = value
 
     def lookup(self, name: str) -> Any:
@@ -655,12 +655,10 @@ class Interpreter:
         env.define(f"tile_{row}_{col}", tile)
 
     def _eval_InvokeStmt(self, node: InvokeStmt, env: Environment) -> None:
-        target = self._eval(node.target, env)
-        result = target
         if node.pipe is not None:
-            pipe_target = self._eval(node.pipe, env)
-            if callable(pipe_target):
-                result = pipe_target(target)
+            result = self._eval(node.pipe, env)
+        else:
+            result = self._eval(node.target, env)
         self.output(f"[invoke] {result}")
 
     def _eval_TransformStmt(self, node: TransformStmt, env: Environment) -> None:

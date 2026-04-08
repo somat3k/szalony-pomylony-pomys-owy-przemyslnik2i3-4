@@ -68,8 +68,12 @@ class PoolRuntime:
             raise KeyError(f"Kernel {source_name!r} not found")
         clones: list[Kernel] = []
         for i in range(copies):
-            clone = source.replicate(f"{source_name}_r{i}")
             with self._lock:
+                if len(self._kernels) >= self.max_kernels:
+                    raise RuntimeError(
+                        f"PoolRuntime {self.name!r}: max_kernels ({self.max_kernels}) reached"
+                    )
+                clone = source.replicate(f"{source_name}_r{i}")
                 self._kernels[clone.name] = clone
             clones.append(clone)
         return clones

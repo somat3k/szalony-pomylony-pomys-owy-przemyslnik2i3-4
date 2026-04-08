@@ -248,6 +248,8 @@ class Kernel:
         self._program = list(program)
         self._pc = 0
         self.state = KernelState.IDLE
+        self._stack.clear()
+        self._call_stack.clear()
 
     def run(self, max_cycles: int = 100_000) -> Any:
         """Execute the loaded program.
@@ -280,14 +282,14 @@ class Kernel:
         self.state = KernelState.FINISHED
         return self._stack[-1] if self._stack else None
 
-    def call_native(self, opcode: str, *args: Any) -> Any:
+    def call_native(self, opcode: str, *args: Any, operands: tuple = ()) -> Any:
         """Directly invoke a native operation by name (for Python callers)."""
         fn = self._ops.get(opcode)
         if fn is None:
             raise ValueError(f"Unknown opcode {opcode!r}")
         for a in args:
             self._push(a)
-        fn(Instruction(opcode))
+        fn(Instruction(opcode, operands))
         return self._stack[-1] if self._stack else None
 
     def register_op(self, opcode: str, fn: Callable) -> None:

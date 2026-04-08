@@ -109,7 +109,7 @@ class Display:
     # ------------------------------------------------------------------
 
     def render_json(self, indent: int = 2) -> str:
-        return self.canvas.to_json()
+        return self.canvas.to_json(indent=indent)
 
     # ------------------------------------------------------------------
     # SVG render
@@ -134,6 +134,12 @@ class Display:
         svg_parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" '
             f'width="{width}" height="{height}">',
+            f'<defs>'
+            f'<marker id="arr" markerWidth="8" markerHeight="8" '
+            f'refX="6" refY="3" orient="auto">'
+            f'<path d="M0,0 L0,6 L8,3 z" fill="#ffaa00"/>'
+            f'</marker>'
+            f'</defs>',
             f'<rect width="{width}" height="{height}" fill="#111"/>',
             f'<text x="{padding}" y="{padding + font_size}" '
             f'font-family="monospace" font-size="{font_size}" fill="#aaa">'

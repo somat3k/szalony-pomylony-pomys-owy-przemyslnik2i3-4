@@ -200,9 +200,15 @@ class ComputationGraph:
         order = self._topo_sort()
         results: dict[str, Tensor] = {}
         for node in order:
-            input_tensors = [
-                inp.output for inp in node.inputs if inp.output is not None
+            input_tensors = [inp.output for inp in node.inputs]
+            missing = [
+                inp.name for inp, t in zip(node.inputs, input_tensors) if t is None
             ]
+            if missing:
+                raise ValueError(
+                    f"Cannot evaluate node {node.name!r}: missing output from "
+                    f"upstream node(s): {', '.join(missing)}"
+                )
             node.output = node.fn(*input_tensors)
             results[node.name] = node.output
         return results

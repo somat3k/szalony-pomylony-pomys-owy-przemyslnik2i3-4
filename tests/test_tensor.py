@@ -273,7 +273,7 @@ def test_graph_matmul():
     A = g.constant(Tensor([2, 2], [1.0, 2.0, 3.0, 4.0]), "A")
     out = g.matmul(I, A)
     results = g.forward()
-    assert results[out.name]._data == A.tensor._data if hasattr(A, 'tensor') else [1.0, 2.0, 3.0, 4.0]
+    assert results[out.name]._data == [1.0, 2.0, 3.0, 4.0]
 
 
 def test_graph_dot():

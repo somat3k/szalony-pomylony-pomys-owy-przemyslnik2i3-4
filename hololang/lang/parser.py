@@ -452,10 +452,10 @@ class Parser:
     def _parse_transform(self) -> TransformStmt:
         line, col = self._lc()
         self._advance()
-        name = self._expect(TT.DOT if self._peek().type == TT.DOT else TT.IDENT).value
-        # handle  transform.name(...)
+        name = self._expect(TT.IDENT, "transform name").value
+        # handle qualified form: transform.name(...)
         if self._match(TT.DOT):
-            name = self._advance().value
+            name = self._expect(TT.IDENT, "qualified transform name").value
         args, kwargs = self._parse_call_args()
         self._match(TT.SEMICOLON)
         return TransformStmt(name=name, args=args, kwargs=kwargs, line=line, col=col)
