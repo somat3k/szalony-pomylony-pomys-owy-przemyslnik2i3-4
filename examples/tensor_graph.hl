@@ -1,0 +1,81 @@
+/*
+ * tensor_graph.hl – Tensor computation graph example
+ *
+ * Shows:
+ *   - SafeTensor declarations with dtype and value bounds
+ *   - Computation graph operations (matmul, relu, normalize)
+ *   - Pool-based batch processing
+ *   - Canvas render of tensor slices
+ */
+
+@session("tensor-graph-demo")
+
+// ── Input tensors ────────────────────────────────────────────────────────────
+
+tensor InputA[4][4] {
+    dtype: "float32"
+    // Fill with identity-like values (set from HoloLang is_const)
+}
+
+tensor WeightMatrix[4][4] {
+    dtype: "float32"
+}
+
+// ── SafeTensor with bounds ───────────────────────────────────────────────────
+
+tensor OutputSafe[4][4] {
+    dtype:   "float32"
+    min_val: 0.0
+    max_val: 1.0
+    clamp:   true
+}
+
+// ── Tensor pool with multiple named buffers ──────────────────────────────────
+
+pool TensorBatch {
+    size:    8
+    dtype:   "float32"
+    workers: 2
+}
+
+// ── Computation graph ─────────────────────────────────────────────────────
+
+graph BeamProcessingGraph {
+    node_input:  InputA
+    node_weight: WeightMatrix
+    op_matmul:   node_input -> node_weight
+    op_relu:     op_matmul  -> relu
+    op_norm:     op_relu    -> normalize
+    output:      op_norm
+}
+
+// ── Polygon-range dimensional controller ─────────────────────────────────────
+
+runtime HoloProcessor {
+    pool:       TensorBatch
+    graph:      BeamProcessingGraph
+    surfaces:   [InputA, WeightMatrix, OutputSafe]
+    precision:  "high"
+}
+
+// ── Canvas: visualise tensor slices as tiles ────────────────────────────────
+
+canvas TensorCanvas(InputA) {
+    tile(0, 0) -> InputA
+    tile(0, 1) -> WeightMatrix
+    tile(1, 0) -> OutputSafe
+    tile(1, 1) -> HoloProcessor
+}
+
+// ── Impulse debug cycle ──────────────────────────────────────────────────────
+
+// Propagate input through one cycle
+impulse(tile(0, 0), tile(0, 1)) -> InputA
+impulse(tile(0, 1), tile(1, 0)) -> WeightMatrix
+impulse(tile(1, 0), tile(1, 1)) -> OutputSafe
+
+debug BeamProcessingGraph
+debug TensorCanvas
+debug HoloProcessor
+
+print("Tensor graph executed successfully.")

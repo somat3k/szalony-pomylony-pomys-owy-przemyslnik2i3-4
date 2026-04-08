@@ -1,0 +1,128 @@
+/*
+ * laser_config.hl – Advanced laser and galvanised-mirror configuration
+ *
+ * Demonstrates:
+ *   - Device configuration blocks
+ *   - Beam spectrum control
+ *   - Raster scan setup
+ *   - Channel / webhook / gRPC network plumbing
+ *   - Impulse cycles in a mesh canvas
+ *   - Session and skill tracking
+ */
+
+@session("laser-config-demo")
+
+// ── Devices ─────────────────────────────────────────────────────────────────
+
+device GreenLaser {
+    type:         "solid-state-laser"
+    wavelength:   532           // nm  – frequency-doubled Nd:YAG
+    power_class:  "IIIb"
+    max_power_mw: 100
+    modulation:   "pulsed"
+    beam_quality: 1.1           // M²
+}
+
+device XMirror {
+    type:    "galvanized-mirror"
+    axis:    "horizontal"
+    range:   spectrum(380, 700)nm
+    min_deg: -25.0
+    max_deg:  25.0
+    speed:    150.0             // deg/s
+}
+
+device YMirror {
+    type:    "galvanized-mirror"
+    axis:    "vertical"
+    min_deg: -20.0
+    max_deg:  20.0
+    speed:    120.0
+}
+
+device BeamSensor {
+    type:     "photodiode"
+    sample_rate_hz: 10000
+}
+
+// ── Beam spectrum enum ───────────────────────────────────────────────────────
+
+enum LaserMode {
+    CW     = 0,
+    PULSED = 1,
+    BURST  = 2
+}
+
+// ── Scan pattern tensor ──────────────────────────────────────────────────────
+
+@kernel("scan-kernel")
+tensor ScanPattern[100][2] {
+    dtype: "float32"
+    pool:  "replicated"
+}
+
+// ── Kernel / pool runtime ────────────────────────────────────────────────────
+
+kernel ScanKernel {
+    replicas:   4
+    max_cycles: 50000
+}
+
+pool ScanPool {
+    kernels: ScanKernel
+    workers: 4
+}
+
+// ── Mesh canvas ─────────────────────────────────────────────────────────────
+
+mesh LaserCanvas(ScanPattern) {
+    // Row 0: left-to-right scan
+    tile(0, 0) -> GreenLaser
+    tile(0, 1) -> XMirror
+    tile(0, 2) -> YMirror
+    tile(0, 3) -> BeamSensor
+
+    // Row 1: feedback loop
+    tile(1, 0) -> BeamSensor
+    tile(1, 1) -> GreenLaser
+}
+
+// ── Network stack ────────────────────────────────────────────────────────────
+
+channel DataChannel(grpc) {
+    host: "localhost"
+    port: 50051
+    tls:  false
+}
+
+webhook StatusWebhook {
+    url:    "http://localhost:9000/holo/status"
+    events: "beam_change,angle_change"
+}
+
+api HoloAPI {
+    base_path: "/api/v1/holography"
+    port:      8000
+}
+
+// ── Control flow ─────────────────────────────────────────────────────────────
+
+// Set beam parameters
+config {
+    wavelength:   532,
+    power_mw:     50.0,
+    scan_mode:    LaserMode.CW
+}
+
+// Fire an impulse from the sensor tile to the laser tile (feedback)
+impulse(tile(1, 0), tile(1, 1)) -> 0.95
+
+// Invoke the laser canvas end-to-end
+invoke(LaserCanvas) -> HoloAPI
+
+// Debug output
+debug GreenLaser
+debug LaserCanvas
+debug ScanPool
+
+print("Laser configuration complete – system ready.")
