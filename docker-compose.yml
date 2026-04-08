@@ -1,0 +1,32 @@
+services:
+  # HoloLang Python runtime
+  hololang:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hololang:latest
+    volumes:
+      - ./examples:/app/examples:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: hololang run examples/hello_holo.hl
+
+  # NuxtJS documentation site
+  docs:
+    build:
+      context: ./docs-site
+      dockerfile: Dockerfile
+    image: hololang-docs:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
