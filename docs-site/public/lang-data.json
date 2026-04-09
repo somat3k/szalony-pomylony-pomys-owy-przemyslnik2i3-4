@@ -1,0 +1,1235 @@
+{
+  "generated_at": "2026-04-09T17:12:04.212669+00:00",
+  "version": "0.1.0",
+  "keywords": [
+    {
+      "keyword": "api",
+      "token_type": "KW_API"
+    },
+    {
+      "keyword": "batch",
+      "token_type": "KW_BATCH"
+    },
+    {
+      "keyword": "beam",
+      "token_type": "KW_BEAM"
+    },
+    {
+      "keyword": "bind",
+      "token_type": "KW_BIND"
+    },
+    {
+      "keyword": "break",
+      "token_type": "KW_BREAK"
+    },
+    {
+      "keyword": "canvas",
+      "token_type": "KW_CANVAS"
+    },
+    {
+      "keyword": "channel",
+      "token_type": "KW_CHANNEL"
+    },
+    {
+      "keyword": "config",
+      "token_type": "KW_CONFIG"
+    },
+    {
+      "keyword": "connect",
+      "token_type": "KW_CONNECT"
+    },
+    {
+      "keyword": "const",
+      "token_type": "KW_CONST"
+    },
+    {
+      "keyword": "continue",
+      "token_type": "KW_CONTINUE"
+    },
+    {
+      "keyword": "debug",
+      "token_type": "KW_DEBUG"
+    },
+    {
+      "keyword": "device",
+      "token_type": "KW_DEVICE"
+    },
+    {
+      "keyword": "doc",
+      "token_type": "KW_DOC"
+    },
+    {
+      "keyword": "dtype",
+      "token_type": "KW_DTYPE"
+    },
+    {
+      "keyword": "else",
+      "token_type": "KW_ELSE"
+    },
+    {
+      "keyword": "emit",
+      "token_type": "KW_EMIT"
+    },
+    {
+      "keyword": "enum",
+      "token_type": "KW_ENUM"
+    },
+    {
+      "keyword": "false",
+      "token_type": "KW_FALSE"
+    },
+    {
+      "keyword": "fn",
+      "token_type": "KW_FN"
+    },
+    {
+      "keyword": "for",
+      "token_type": "KW_FOR"
+    },
+    {
+      "keyword": "graph",
+      "token_type": "KW_GRAPH"
+    },
+    {
+      "keyword": "if",
+      "token_type": "KW_IF"
+    },
+    {
+      "keyword": "import",
+      "token_type": "KW_IMPORT"
+    },
+    {
+      "keyword": "impulse",
+      "token_type": "KW_IMPULSE"
+    },
+    {
+      "keyword": "in",
+      "token_type": "KW_IN"
+    },
+    {
+      "keyword": "invoke",
+      "token_type": "KW_INVOKE"
+    },
+    {
+      "keyword": "kernel",
+      "token_type": "KW_KERNEL"
+    },
+    {
+      "keyword": "laser",
+      "token_type": "KW_LASER"
+    },
+    {
+      "keyword": "let",
+      "token_type": "KW_LET"
+    },
+    {
+      "keyword": "listen",
+      "token_type": "KW_LISTEN"
+    },
+    {
+      "keyword": "matrix",
+      "token_type": "KW_MATRIX"
+    },
+    {
+      "keyword": "mesh",
+      "token_type": "KW_MESH"
+    },
+    {
+      "keyword": "mirror",
+      "token_type": "KW_MIRROR"
+    },
+    {
+      "keyword": "null",
+      "token_type": "KW_NULL"
+    },
+    {
+      "keyword": "param",
+      "token_type": "KW_PARAM"
+    },
+    {
+      "keyword": "polygon",
+      "token_type": "KW_POLYGON"
+    },
+    {
+      "keyword": "pool",
+      "token_type": "KW_POOL"
+    },
+    {
+      "keyword": "pool_run",
+      "token_type": "KW_POOL_RUN"
+    },
+    {
+      "keyword": "range",
+      "token_type": "KW_RANGE"
+    },
+    {
+      "keyword": "replicated",
+      "token_type": "KW_REPLICATED"
+    },
+    {
+      "keyword": "return",
+      "token_type": "KW_RETURN"
+    },
+    {
+      "keyword": "runtime",
+      "token_type": "KW_RUNTIME"
+    },
+    {
+      "keyword": "safe",
+      "token_type": "KW_SAFE"
+    },
+    {
+      "keyword": "sensor",
+      "token_type": "KW_SENSOR"
+    },
+    {
+      "keyword": "session",
+      "token_type": "KW_SESSION"
+    },
+    {
+      "keyword": "skill",
+      "token_type": "KW_SKILL"
+    },
+    {
+      "keyword": "spectrum",
+      "token_type": "KW_SPECTRUM"
+    },
+    {
+      "keyword": "tensor",
+      "token_type": "KW_TENSOR"
+    },
+    {
+      "keyword": "tile",
+      "token_type": "KW_TILE"
+    },
+    {
+      "keyword": "transform",
+      "token_type": "KW_TRANSFORM"
+    },
+    {
+      "keyword": "true",
+      "token_type": "KW_TRUE"
+    },
+    {
+      "keyword": "type",
+      "token_type": "KW_TYPE"
+    },
+    {
+      "keyword": "visible",
+      "token_type": "KW_VISIBLE"
+    },
+    {
+      "keyword": "webhook",
+      "token_type": "KW_WEBHOOK"
+    },
+    {
+      "keyword": "while",
+      "token_type": "KW_WHILE"
+    }
+  ],
+  "ast_nodes": [
+    {
+      "name": "Annotation",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "args",
+          "type": "list[Node]"
+        },
+        {
+          "name": "kwargs",
+          "type": "dict[str, Node]"
+        }
+      ],
+      "doc": "@name(args)"
+    },
+    {
+      "name": "ApiDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "ApiDecl(name: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "AssignExpr",
+      "fields": [
+        {
+          "name": "op",
+          "type": "str"
+        },
+        {
+          "name": "target",
+          "type": "Node"
+        },
+        {
+          "name": "value",
+          "type": "Node"
+        }
+      ],
+      "doc": "AssignExpr(op: 'str', target: 'Node', value: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "BeamStmt",
+      "fields": [
+        {
+          "name": "args",
+          "type": "list[Node]"
+        },
+        {
+          "name": "kwargs",
+          "type": "dict[str, Node]"
+        }
+      ],
+      "doc": "BeamStmt(args: 'list[Node]', kwargs: 'dict[str, Node]', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "BinaryOp",
+      "fields": [
+        {
+          "name": "op",
+          "type": "str"
+        },
+        {
+          "name": "left",
+          "type": "Node"
+        },
+        {
+          "name": "right",
+          "type": "Node"
+        }
+      ],
+      "doc": "BinaryOp(op: 'str', left: 'Node', right: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "BindStmt",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "target",
+          "type": "Node"
+        }
+      ],
+      "doc": "BindStmt(name: 'str', target: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "BlockStmt",
+      "fields": [
+        {
+          "name": "stmts",
+          "type": "list[Node]"
+        }
+      ],
+      "doc": "BlockStmt(stmts: 'list[Node]', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "BoolLiteral",
+      "fields": [
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "doc": "BoolLiteral(value: 'bool', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "BreakStmt",
+      "fields": [],
+      "doc": "BreakStmt(*, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "CallExpr",
+      "fields": [
+        {
+          "name": "callee",
+          "type": "Node"
+        },
+        {
+          "name": "args",
+          "type": "list[Node]"
+        },
+        {
+          "name": "kwargs",
+          "type": "dict[str, Node]"
+        }
+      ],
+      "doc": "CallExpr(callee: 'Node', args: 'list[Node]', kwargs: 'dict[str, Node]', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "CanvasDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "source",
+          "type": "Node | None"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "CanvasDecl(name: 'str', source: 'Node | None', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ChannelDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "protocol",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "ChannelDecl(name: 'str', protocol: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ConfigStmt",
+      "fields": [
+        {
+          "name": "pairs",
+          "type": "dict[str, Node]"
+        }
+      ],
+      "doc": "ConfigStmt(pairs: 'dict[str, Node]', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ConnectStmt",
+      "fields": [
+        {
+          "name": "target",
+          "type": "Node"
+        },
+        {
+          "name": "port",
+          "type": "Node | None"
+        }
+      ],
+      "doc": "ConnectStmt(target: 'Node', port: 'Node | None', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ContinueStmt",
+      "fields": [],
+      "doc": "ContinueStmt(*, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "DebugStmt",
+      "fields": [
+        {
+          "name": "expr",
+          "type": "Node"
+        }
+      ],
+      "doc": "DebugStmt(expr: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "DeviceDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "DeviceDecl(name: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "DictLiteral",
+      "fields": [
+        {
+          "name": "pairs",
+          "type": "list[tuple[Node, Node]]"
+        }
+      ],
+      "doc": "DictLiteral(pairs: 'list[tuple[Node, Node]]', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "DocDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "DocDecl(name: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "EmitStmt",
+      "fields": [
+        {
+          "name": "channel",
+          "type": "Node"
+        },
+        {
+          "name": "message",
+          "type": "Node"
+        }
+      ],
+      "doc": "EmitStmt(channel: 'Node', message: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "EnumDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "variants",
+          "type": "list[tuple[str, Node | None]]"
+        }
+      ],
+      "doc": "EnumDecl(name: 'str', variants: 'list[tuple[str, Node | None]]', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ExprStmt",
+      "fields": [
+        {
+          "name": "expr",
+          "type": "Node"
+        }
+      ],
+      "doc": "ExprStmt(expr: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "FloatLiteral",
+      "fields": [
+        {
+          "name": "value",
+          "type": "float"
+        }
+      ],
+      "doc": "FloatLiteral(value: 'float', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ForStmt",
+      "fields": [
+        {
+          "name": "var",
+          "type": "str"
+        },
+        {
+          "name": "iterable",
+          "type": "Node"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "ForStmt(var: 'str', iterable: 'Node', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "FunctionDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "params",
+          "type": "list[tuple[str, str | None]]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        }
+      ],
+      "doc": "FunctionDecl(name: 'str', params: 'list[tuple[str, str | None]]', body: 'BlockStmt', annotations: 'list[Annotation]', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "Identifier",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        }
+      ],
+      "doc": "Identifier(name: 'str', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "IfStmt",
+      "fields": [
+        {
+          "name": "condition",
+          "type": "Node"
+        },
+        {
+          "name": "then_block",
+          "type": "BlockStmt"
+        },
+        {
+          "name": "else_block",
+          "type": "BlockStmt | None"
+        }
+      ],
+      "doc": "IfStmt(condition: 'Node', then_block: 'BlockStmt', else_block: 'BlockStmt | None', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ImportStmt",
+      "fields": [
+        {
+          "name": "path",
+          "type": "str"
+        },
+        {
+          "name": "alias",
+          "type": "str | None"
+        }
+      ],
+      "doc": "ImportStmt(path: 'str', alias: 'str | None', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ImpulseStmt",
+      "fields": [
+        {
+          "name": "from_tile",
+          "type": "Node"
+        },
+        {
+          "name": "to_tile",
+          "type": "Node"
+        },
+        {
+          "name": "payload",
+          "type": "Node | None"
+        }
+      ],
+      "doc": "ImpulseStmt(from_tile: 'Node', to_tile: 'Node', payload: 'Node | None', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "IndexAccess",
+      "fields": [
+        {
+          "name": "obj",
+          "type": "Node"
+        },
+        {
+          "name": "index",
+          "type": "Node"
+        }
+      ],
+      "doc": "obj[index]"
+    },
+    {
+      "name": "IntLiteral",
+      "fields": [
+        {
+          "name": "value",
+          "type": "int"
+        }
+      ],
+      "doc": "IntLiteral(value: 'int', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "InvokeStmt",
+      "fields": [
+        {
+          "name": "target",
+          "type": "Node"
+        },
+        {
+          "name": "pipe",
+          "type": "Node | None"
+        }
+      ],
+      "doc": "InvokeStmt(target: 'Node', pipe: 'Node | None', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "KernelDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "KernelDecl(name: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "LetStmt",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "is_const",
+          "type": "bool"
+        },
+        {
+          "name": "value",
+          "type": "Node | None"
+        }
+      ],
+      "doc": "LetStmt(name: 'str', is_const: 'bool', value: 'Node | None', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ListLiteral",
+      "fields": [
+        {
+          "name": "elements",
+          "type": "list[Node]"
+        }
+      ],
+      "doc": "ListLiteral(elements: 'list[Node]', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ListenStmt",
+      "fields": [
+        {
+          "name": "channel",
+          "type": "Node"
+        },
+        {
+          "name": "handler",
+          "type": "Node"
+        }
+      ],
+      "doc": "ListenStmt(channel: 'Node', handler: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "MemberAccess",
+      "fields": [
+        {
+          "name": "obj",
+          "type": "Node"
+        },
+        {
+          "name": "member",
+          "type": "str"
+        }
+      ],
+      "doc": "obj.member"
+    },
+    {
+      "name": "MeshDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "source",
+          "type": "Node | None"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "MeshDecl(name: 'str', source: 'Node | None', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "NmLiteral",
+      "fields": [
+        {
+          "name": "value",
+          "type": "float"
+        }
+      ],
+      "doc": "450nm \u2013 a wavelength literal."
+    },
+    {
+      "name": "NullLiteral",
+      "fields": [],
+      "doc": "NullLiteral(*, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "ParamStmt",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "value",
+          "type": "Node"
+        }
+      ],
+      "doc": "ParamStmt(name: 'str', value: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "PipeExpr",
+      "fields": [
+        {
+          "name": "op",
+          "type": "str"
+        },
+        {
+          "name": "left",
+          "type": "Node"
+        },
+        {
+          "name": "right",
+          "type": "Node"
+        }
+      ],
+      "doc": "left -> right  or  left => right"
+    },
+    {
+      "name": "PoolDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "PoolDecl(name: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "Program",
+      "fields": [
+        {
+          "name": "body",
+          "type": "list[Node]"
+        }
+      ],
+      "doc": "Root node \u2013 list of top-level declarations / statements."
+    },
+    {
+      "name": "RangeExpr",
+      "fields": [
+        {
+          "name": "start",
+          "type": "Node"
+        },
+        {
+          "name": "end",
+          "type": "Node"
+        }
+      ],
+      "doc": "start..end"
+    },
+    {
+      "name": "ReturnStmt",
+      "fields": [
+        {
+          "name": "value",
+          "type": "Node | None"
+        }
+      ],
+      "doc": "ReturnStmt(value: 'Node | None', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "RuntimeDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "RuntimeDecl(name: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "SessionDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "SessionDecl(name: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "SkillDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "SkillDecl(name: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "SpectrumExpr",
+      "fields": [
+        {
+          "name": "lo",
+          "type": "Node"
+        },
+        {
+          "name": "hi",
+          "type": "Node"
+        },
+        {
+          "name": "unit",
+          "type": "str"
+        }
+      ],
+      "doc": "spectrum(lo, hi)nm  or  visible-range"
+    },
+    {
+      "name": "StringLiteral",
+      "fields": [
+        {
+          "name": "value",
+          "type": "str"
+        }
+      ],
+      "doc": "StringLiteral(value: 'str', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "TensorDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "dims",
+          "type": "list[Node]"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "TensorDecl(name: 'str', dims: 'list[Node]', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "TensorDimExpr",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "dims",
+          "type": "list[Node]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "tensor Name[d0][d1]..."
+    },
+    {
+      "name": "TileStmt",
+      "fields": [
+        {
+          "name": "row",
+          "type": "Node"
+        },
+        {
+          "name": "grid_col",
+          "type": "Node"
+        },
+        {
+          "name": "target",
+          "type": "Node"
+        }
+      ],
+      "doc": "TileStmt(row: 'Node', grid_col: 'Node', target: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "TransformStmt",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "args",
+          "type": "list[Node]"
+        },
+        {
+          "name": "kwargs",
+          "type": "dict[str, Node]"
+        }
+      ],
+      "doc": "TransformStmt(name: 'str', args: 'list[Node]', kwargs: 'dict[str, Node]', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "UnaryOp",
+      "fields": [
+        {
+          "name": "op",
+          "type": "str"
+        },
+        {
+          "name": "operand",
+          "type": "Node"
+        }
+      ],
+      "doc": "UnaryOp(op: 'str', operand: 'Node', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "WebhookDecl",
+      "fields": [
+        {
+          "name": "name",
+          "type": "str"
+        },
+        {
+          "name": "annotations",
+          "type": "list[Annotation]"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "WebhookDecl(name: 'str', annotations: 'list[Annotation]', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    },
+    {
+      "name": "WhileStmt",
+      "fields": [
+        {
+          "name": "condition",
+          "type": "Node"
+        },
+        {
+          "name": "body",
+          "type": "BlockStmt"
+        }
+      ],
+      "doc": "WhileStmt(condition: 'Node', body: 'BlockStmt', *, line: 'int' = 0, col: 'int' = 0)"
+    }
+  ],
+  "skills": [
+    {
+      "name": "api_design",
+      "description": "Design REST API endpoints",
+      "category": "network",
+      "level": "intermediate"
+    },
+    {
+      "name": "block_pipeline",
+      "description": "Build generative block pipelines",
+      "category": "vm",
+      "level": "intermediate"
+    },
+    {
+      "name": "doc_directories",
+      "description": "Create structured doc directories",
+      "category": "docs",
+      "level": "beginner"
+    },
+    {
+      "name": "grpc_channel",
+      "description": "Set up gRPC communication channels",
+      "category": "network",
+      "level": "intermediate"
+    },
+    {
+      "name": "holographic_optics",
+      "description": "Holographic optical system design",
+      "category": "physics",
+      "level": "advanced"
+    },
+    {
+      "name": "hololang_advanced",
+      "description": "Advanced HoloLang patterns",
+      "category": "language",
+      "level": "advanced"
+    },
+    {
+      "name": "hololang_basics",
+      "description": "Write basic HoloLang programs",
+      "category": "language",
+      "level": "beginner"
+    },
+    {
+      "name": "kernel_programming",
+      "description": "Write kernel instruction programs",
+      "category": "vm",
+      "level": "intermediate"
+    },
+    {
+      "name": "laser_control",
+      "description": "Control laser beam parameters",
+      "category": "device",
+      "level": "beginner"
+    },
+    {
+      "name": "light_engineering",
+      "description": "Principles of light manipulation",
+      "category": "physics",
+      "level": "intermediate"
+    },
+    {
+      "name": "mesh_canvas",
+      "description": "Design mesh canvas layouts",
+      "category": "mesh",
+      "level": "beginner"
+    },
+    {
+      "name": "mirror_control",
+      "description": "Configure galvanized mirror angles",
+      "category": "device",
+      "level": "beginner"
+    },
+    {
+      "name": "pool_runtime",
+      "description": "Configure pooled VM runtimes",
+      "category": "vm",
+      "level": "advanced"
+    },
+    {
+      "name": "safetensor",
+      "description": "Use SafeTensor with validation",
+      "category": "tensor",
+      "level": "intermediate"
+    },
+    {
+      "name": "sensor_reading",
+      "description": "Read and interpret sensor data",
+      "category": "device",
+      "level": "beginner"
+    },
+    {
+      "name": "session_management",
+      "description": "Manage execution sessions",
+      "category": "docs",
+      "level": "beginner"
+    },
+    {
+      "name": "skill_tracking",
+      "description": "Track skill progression",
+      "category": "docs",
+      "level": "beginner"
+    },
+    {
+      "name": "system_architecture",
+      "description": "Design multi-layer system architectures",
+      "category": "architecture",
+      "level": "advanced"
+    },
+    {
+      "name": "tensor_basics",
+      "description": "Create and manipulate tensors",
+      "category": "tensor",
+      "level": "beginner"
+    },
+    {
+      "name": "tensor_graph",
+      "description": "Build computation graphs",
+      "category": "tensor",
+      "level": "intermediate"
+    },
+    {
+      "name": "tensor_pool",
+      "description": "Pool and batch tensor operations",
+      "category": "tensor",
+      "level": "advanced"
+    },
+    {
+      "name": "tile_impulse",
+      "description": "Wire tile-to-tile impulse cycles",
+      "category": "mesh",
+      "level": "intermediate"
+    },
+    {
+      "name": "webhook_dispatch",
+      "description": "Dispatch and receive webhooks",
+      "category": "network",
+      "level": "beginner"
+    },
+    {
+      "name": "websocket",
+      "description": "Use WebSocket streams",
+      "category": "network",
+      "level": "intermediate"
+    }
+  ]
+}
