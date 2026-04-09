@@ -10,9 +10,8 @@
             <li v-for="page in section.children" :key="page._path">
               <NuxtLink
                 :to="page._path"
-                class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors"
+                class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors text-gray-400 hover:text-gray-100 hover:bg-gray-800"
                 active-class="bg-holo-900 text-holo-300 font-medium"
-                inactive-class="text-gray-400 hover:text-gray-100 hover:bg-gray-800"
               >
                 {{ page.title }}
               </NuxtLink>

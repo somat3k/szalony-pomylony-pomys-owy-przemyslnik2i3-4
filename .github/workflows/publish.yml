@@ -70,9 +70,8 @@ jobs:
       - name: Publish to GitHub Packages
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          repository-url: https://upload.pypi.org/legacy/
+          repository-url: https://pip.pkg.github.com/somat3k/
           password: ${{ secrets.GITHUB_TOKEN }}
-          # Use the GitHub-hosted index as the trusted publisher
           skip-existing: true
 
   publish-container:

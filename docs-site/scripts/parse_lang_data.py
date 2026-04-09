@@ -13,12 +13,9 @@ Or via the GitHub Actions "Update Docs Data" workflow.
 """
 from __future__ import annotations
 
-import ast
 import inspect
 import json
-import re
 import sys
-import textwrap
 from dataclasses import fields as dc_fields
 from datetime import datetime, timezone
 from pathlib import Path
@@ -27,7 +24,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
-from hololang.lang.lexer import KEYWORDS, TT  # noqa: E402
+from hololang.lang.lexer import KEYWORDS  # noqa: E402
 from hololang.lang import ast_nodes  # noqa: E402
 from hololang.docs.skills import SkillRegistry  # noqa: E402
 import hololang  # noqa: E402
