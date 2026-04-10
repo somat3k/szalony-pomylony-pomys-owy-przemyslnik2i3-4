@@ -149,7 +149,7 @@ session MySession {
 hololang/
 ├── lang/               # Language front-end
 │   ├── lexer.py        # Tokenizer (90+ token types, multi-style comments)
-│   ├── ast_nodes.py    # 50 AST node definitions
+│   ├── ast_nodes.py    # 50+ AST node definitions
 │   ├── parser.py       # Recursive-descent parser
 │   └── interpreter.py  # Tree-walk interpreter
 ├── tensor/             # Tensor subsystem
