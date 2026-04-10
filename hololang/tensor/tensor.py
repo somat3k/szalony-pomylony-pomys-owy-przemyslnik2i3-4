@@ -2,6 +2,8 @@
 
 A pure-Python implementation that works without NumPy.
 When NumPy is available it is used transparently for performance.
+The NumPy path accelerates: matmul, element-wise arithmetic,
+reductions (sum/mean/min/max/norm), and apply_fn.
 """
 
 from __future__ import annotations
@@ -9,6 +11,16 @@ from __future__ import annotations
 import math
 import itertools
 from typing import Any, Callable, Iterable, Iterator
+
+# ---------------------------------------------------------------------------
+# Optional NumPy acceleration
+# ---------------------------------------------------------------------------
+
+try:
+    import numpy as _numpy_module   # noqa: F401
+    _NP = _numpy_module
+except ImportError:
+    _NP = None  # type: ignore[assignment]
 
 
 # ---------------------------------------------------------------------------
@@ -145,6 +157,10 @@ class Tensor:
 
     def _apply(self, other: "Tensor | float | int", fn: Callable) -> "Tensor":
         if isinstance(other, (int, float)):
+            if _NP is not None:
+                a = _NP.array(self._data, dtype=_NP.float64)
+                result = fn(a, other)
+                return Tensor(self.dims, result.tolist(), self.dtype)
             return Tensor(
                 dims=self.dims,
                 data=[fn(x, other) for x in self._data],
@@ -155,6 +171,11 @@ class Tensor:
                 raise ValueError(
                     f"Shape mismatch: {self.shape} vs {other.shape}"
                 )
+            if _NP is not None:
+                a = _NP.array(self._data, dtype=_NP.float64)
+                b = _NP.array(other._data, dtype=_NP.float64)
+                result = fn(a, b)
+                return Tensor(self.dims, result.tolist(), self.dtype)
             return Tensor(
                 dims=self.dims,
                 data=[fn(a, b) for a, b in zip(self._data, other._data)],
@@ -176,18 +197,28 @@ class Tensor:
     # ------------------------------------------------------------------
 
     def sum(self) -> float:
+        if _NP is not None:
+            return float(_NP.array(self._data).sum())
         return sum(self._data)
 
     def mean(self) -> float:
+        if _NP is not None:
+            return float(_NP.array(self._data).mean())
         return sum(self._data) / self.size
 
     def min(self) -> float:
+        if _NP is not None:
+            return float(_NP.array(self._data).min())
         return min(self._data)
 
     def max(self) -> float:
+        if _NP is not None:
+            return float(_NP.array(self._data).max())
         return max(self._data)
 
     def norm(self) -> float:
+        if _NP is not None:
+            return float(_NP.linalg.norm(_NP.array(self._data)))
         return math.sqrt(sum(x * x for x in self._data))
 
     # ------------------------------------------------------------------
@@ -219,6 +250,11 @@ class Tensor:
         k2, n = other.dims
         if k != k2:
             raise ValueError(f"Incompatible shapes for matmul: {self.shape} @ {other.shape}")
+        if _NP is not None:
+            a = _NP.array(self._data, dtype=_NP.float64).reshape(m, k)
+            b = _NP.array(other._data, dtype=_NP.float64).reshape(k, n)
+            result = _NP.matmul(a, b)
+            return Tensor([m, n], result.flatten().tolist(), self.dtype)
         result = [0.0] * (m * n)
         for i in range(m):
             for j in range(n):
@@ -229,6 +265,10 @@ class Tensor:
         return Tensor([m, n], result, self.dtype)
 
     def apply_fn(self, fn: Callable[[float], float]) -> "Tensor":
+        if _NP is not None:
+            vfn = _NP.vectorize(fn)
+            result = vfn(_NP.array(self._data, dtype=_NP.float64))
+            return Tensor(self.dims, result.tolist(), self.dtype)
         return Tensor(self.dims, [fn(x) for x in self._data], self.dtype)
 
     def clip(self, lo: float, hi: float) -> "Tensor":

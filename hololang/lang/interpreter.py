@@ -490,15 +490,37 @@ class Interpreter:
         return self._eval(node.expr, env)
 
     def _eval_ImportStmt(self, node: ImportStmt, env: Environment) -> None:
-        import importlib
-        try:
-            mod = importlib.import_module(node.path.replace("/", ".").rstrip(".hl"))
-            alias = node.alias or node.path.split("/")[-1].replace(".hl", "")
-            env.define(alias, mod)
-        except ModuleNotFoundError:
-            # Gracefully skip missing modules during interpretation
-            alias = node.alias or node.path
-            env.define(alias, HoloObject("module", alias))
+        import os
+        path = node.path
+        alias = node.alias or path.split("/")[-1].replace(".hl", "")
+
+        if path.endswith(".hl"):
+            # Resolve relative paths against the current working directory
+            resolved = path if os.path.isabs(path) else os.path.join(os.getcwd(), path)
+            if os.path.exists(resolved):
+                from hololang.lang.parser import parse
+                with open(resolved, encoding="utf-8") as fh:
+                    source = fh.read()
+                prog = parse(source)
+                module_env = Environment()
+                sub = Interpreter(env=module_env, output_hook=self.output)
+                sub.eval_program(prog)
+                module_obj = HoloObject("module", alias)
+                module_obj.attrs.update(
+                    {k: v for k, v in module_env._vars.items()}
+                )
+                env.define(alias, module_obj)
+            else:
+                # File not found – define as an empty module placeholder
+                env.define(alias, HoloObject("module", alias))
+        else:
+            # Python module import
+            import importlib
+            try:
+                mod = importlib.import_module(path.replace("/", ".").rstrip(".hl"))
+                env.define(alias, mod)
+            except ModuleNotFoundError:
+                env.define(alias, HoloObject("module", alias))
 
     # ------------------------------------------------------------------
     # Declarations
@@ -676,9 +698,35 @@ class Interpreter:
                     f"kwargs={kwargs}")
 
     def _eval_ImpulseStmt(self, node: ImpulseStmt, env: Environment) -> None:
+        from hololang.mesh.tile import Tile
         from_t  = self._eval(node.from_tile, env)
         to_t    = self._eval(node.to_tile, env)
         payload = self._eval(node.payload, env) if node.payload else None
+
+        # Wire canvas tiles when both endpoints are (row, col) tuples
+        if isinstance(from_t, tuple) and isinstance(to_t, tuple):
+            fr, fc = int(from_t[0]), int(from_t[1])
+            tr, tc = int(to_t[0]), int(to_t[1])
+
+            src_tile: Tile | None = None
+            try:
+                candidate = env.lookup(f"tile_{fr}_{fc}")
+                if isinstance(candidate, Tile):
+                    src_tile = candidate
+            except NameError:
+                pass
+
+            if src_tile is not None:
+                src_tile.connect_to(tr, tc)
+                # Deliver the initial payload to the destination tile
+                if payload is not None:
+                    try:
+                        dst = env.lookup(f"tile_{tr}_{tc}")
+                        if isinstance(dst, Tile):
+                            dst.receive_impulse(payload)
+                    except NameError:
+                        pass
+
         self.output(f"[impulse] {from_t} -> {to_t} payload={payload}")
 
     def _eval_EmitStmt(self, node: EmitStmt, env: Environment) -> None:
