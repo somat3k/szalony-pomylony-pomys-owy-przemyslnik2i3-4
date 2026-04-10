@@ -1,0 +1,130 @@
+# =============================================================================
+# HoloLang / Pillar – docker-compose.yml
+#
+# Services
+# ────────
+# pillar       The C-core + HoloLang runtime container.
+#              Runs the full_system.hl entry point by default.
+#              Exposes gRPC (:50051), WebSocket (:8080), REST (:8000).
+#
+# repl         Interactive shell_vm REPL (same image, different CMD).
+#              Start with:  docker compose run --rm repl
+#
+# storage      SQLite3 + IPFS gateway for offline/online distributed storage.
+#              IPFS API on :5001, Gateway on :8081.
+#
+# grpc-proxy   Envoy sidecar for HTTP/1.1 → gRPC transcoding (optional).
+#              Enabled via COMPOSE_PROFILES=grpc-proxy.
+# =============================================================================
+
+services:
+
+  # ── Pillar runtime ──────────────────────────────────────────────────────── #
+  pillar:
+    image: hololang/pillar:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: holo_pillar
+    restart: unless-stopped
+    command: ["hololang", "run", "examples/full_system.hl"]
+    environment:
+      HOLO_ENV:        production
+      HOLO_GRPC_HOST:  "0.0.0.0"
+      HOLO_GRPC_PORT:  "50051"
+      HOLO_WS_PORT:    "8080"
+      HOLO_API_PORT:   "8000"
+      HOLO_STORAGE_DB: "/data/pillar.db"
+      HOLO_IPFS_API:   "http://storage:5001"
+    ports:
+      - "50051:50051"   # gRPC – PillarService
+      - "8080:8080"     # WebSocket
+      - "8000:8000"     # REST API / Webhook sink
+    volumes:
+      - pillar_data:/data
+      - ./examples:/workspace/examples:ro
+      - ./core:/workspace/core:ro
+    networks:
+      - pillar_net
+    depends_on:
+      storage:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-c",
+             "import socket; s=socket.socket(); s.connect(('localhost',50051)); s.close()"]
+      interval: 10s
+      timeout:  5s
+      retries:  5
+
+  # ── Interactive REPL (shell_vm) ─────────────────────────────────────────── #
+  repl:
+    image: hololang/pillar:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: holo_repl
+    # Not started by default – use:  docker compose run --rm repl
+    profiles: [repl]
+    stdin_open: true
+    tty: true
+    command: ["hololang", "repl"]
+    environment:
+      HOLO_ENV:        development
+      HOLO_STORAGE_DB: "/data/repl.db"
+      HOLO_IPFS_API:   "http://storage:5001"
+    volumes:
+      - pillar_data:/data
+      - ./examples:/workspace/examples:ro
+    networks:
+      - pillar_net
+
+  # ── Distributed storage (SQLite + IPFS) ────────────────────────────────── #
+  storage:
+    image: ipfs/kubo:v0.28.0
+    container_name: holo_storage
+    restart: unless-stopped
+    environment:
+      IPFS_PROFILE: server
+    ports:
+      - "4001:4001"   # Swarm (P2P)
+      - "5001:5001"   # API
+      - "8081:8080"   # Gateway (host 8080 taken by pillar WS)
+    volumes:
+      - ipfs_data:/data/ipfs
+    networks:
+      - pillar_net
+    healthcheck:
+      test: ["CMD", "ipfs", "id"]
+      interval: 15s
+      timeout:  10s
+      retries:  6
+
+  # ── gRPC → HTTP/1.1 Envoy proxy (optional, profile: grpc-proxy) ─────────── #
+  grpc-proxy:
+    image: envoyproxy/envoy:v1.29-latest
+    container_name: holo_grpc_proxy
+    profiles: [grpc-proxy]
+    restart: unless-stopped
+    ports:
+      - "9090:9090"   # Envoy listener (HTTP/1.1 → gRPC transcoding)
+    volumes:
+      - ./infra/envoy.yaml:/etc/envoy/envoy.yaml:ro
+    networks:
+      - pillar_net
+    depends_on:
+      - pillar
+    command: ["/usr/local/bin/envoy", "-c", "/etc/envoy/envoy.yaml"]
+
+# ── Named volumes ──────────────────────────────────────────────────────────── #
+volumes:
+  pillar_data:
+    driver: local
+  ipfs_data:
+    driver: local
+
+# ── Networks ───────────────────────────────────────────────────────────────── #
+networks:
+  pillar_net:
+    driver: bridge
