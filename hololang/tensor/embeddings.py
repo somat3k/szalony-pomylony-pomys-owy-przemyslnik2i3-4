@@ -87,10 +87,15 @@ class EmbeddingSpace:
     def set(self, key: str, vector: "Tensor | list[float]") -> None:
         """Store a vector under *key*.  Raises ``ValueError`` on dim mismatch."""
         if isinstance(vector, list):
+            if len(vector) != self.dim:
+                raise ValueError(
+                    f"EmbeddingSpace({self.name!r}): expected dim={self.dim}, "
+                    f"got {len(vector)}"
+                )
             vector = Tensor([self.dim], vector)
         if vector.size != self.dim:
             raise ValueError(
-                f"EmbeddingSpace({self.name}): expected dim={self.dim}, "
+                f"EmbeddingSpace({self.name!r}): expected dim={self.dim}, "
                 f"got {vector.size}"
             )
         self._table[key] = vector
