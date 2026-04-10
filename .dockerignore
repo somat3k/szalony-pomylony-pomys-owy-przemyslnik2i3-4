@@ -1,0 +1,12 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+dist
+build
+.eggs
+*.o
+*.a
+*.so
