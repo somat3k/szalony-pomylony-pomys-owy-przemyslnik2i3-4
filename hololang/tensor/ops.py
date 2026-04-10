@@ -31,9 +31,17 @@ def leaky_relu(t: Tensor, alpha: float = 0.01) -> Tensor:
     return t.apply_fn(lambda v: v if v >= 0.0 else alpha * v)
 
 
+def _stable_sigmoid(v: float) -> float:
+    """Numerically stable sigmoid for scalar values."""
+    if v >= 0.0:
+        return 1.0 / (1.0 + math.exp(-v))
+    exp_v = math.exp(v)
+    return exp_v / (1.0 + exp_v)
+
+
 def sigmoid(t: Tensor) -> Tensor:
     """Sigmoid activation: ``1 / (1 + exp(-x))`` element-wise."""
-    return t.apply_fn(lambda v: 1.0 / (1.0 + math.exp(-v)))
+    return t.apply_fn(_stable_sigmoid)
 
 
 def tanh_act(t: Tensor) -> Tensor:
@@ -109,14 +117,24 @@ def dropout(t: Tensor, rate: float = 0.5, seed: int | None = None) -> Tensor:
 
     At inference ``rate=0`` behaves as identity.  During training each
     element is zeroed with probability *rate* and scaled by ``1/(1-rate)``.
+
+    Parameters
+    ----------
+    rate:
+        Drop probability in the range ``[0.0, 1.0)``.  Raises
+        :exc:`ValueError` for values outside this range.
     """
-    if rate <= 0.0:
+    if not (0.0 <= rate < 1.0):
+        raise ValueError(
+            f"dropout rate must be in [0.0, 1.0), got {rate!r}"
+        )
+    if rate == 0.0:
         return Tensor(t.dims, list(t._data), t.dtype, t.name)
     import random
     rng = random.Random(seed)
-    scale = 1.0 / (1.0 - rate)
+    scale_factor = 1.0 / (1.0 - rate)
     data = [
-        0.0 if rng.random() < rate else v * scale
+        0.0 if rng.random() < rate else v * scale_factor
         for v in t._data
     ]
     return Tensor(t.dims, data, t.dtype, t.name)

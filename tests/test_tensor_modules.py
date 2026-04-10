@@ -100,6 +100,29 @@ class TestOps:
         r = dropout(t, rate=0.0)
         assert r._data == t._data
 
+    def test_dropout_invalid_rate_one(self):
+        t = self._t([1.0, 2.0])
+        with pytest.raises(ValueError, match="rate must be in"):
+            dropout(t, rate=1.0)
+
+    def test_dropout_invalid_rate_above_one(self):
+        t = self._t([1.0, 2.0])
+        with pytest.raises(ValueError, match="rate must be in"):
+            dropout(t, rate=1.5)
+
+    def test_dropout_invalid_rate_negative(self):
+        t = self._t([1.0, 2.0])
+        with pytest.raises(ValueError, match="rate must be in"):
+            dropout(t, rate=-0.1)
+
+    def test_sigmoid_large_negative(self):
+        """Stable sigmoid must not raise OverflowError for large negative input."""
+        t = self._t([-1000.0, 0.0, 1000.0])
+        r = sigmoid(t)
+        assert r._data[0] < 1e-6
+        assert abs(r._data[1] - 0.5) < 1e-9
+        assert r._data[2] > 1.0 - 1e-6
+
     def test_clip(self):
         t = self._t([-5.0, 0.5, 10.0])
         r = clip(t, 0.0, 1.0)
@@ -234,6 +257,17 @@ class TestTransformChain:
         assert len(chain) == 2
         assert "x" in repr(chain)
 
+    def test_remove_only_first_match(self):
+        """remove() should delete only the first occurrence of a label."""
+        chain = (TransformChain()
+                 .add(relu, "step")
+                 .add(lambda t: scale(t, 2.0), "step")
+                 .add(lambda t: offset(t, 1.0), "other"))
+        chain.remove("step")
+        names = [n for n, _ in chain]
+        assert names.count("step") == 1  # second "step" remains
+        assert "other" in names
+
     def test_parallel_group(self):
         group = (ParallelTransformGroup()
                  .add(relu, "relu")
@@ -364,6 +398,21 @@ class TestBatch:
         parent = Tensor([4], [1.0, 2.0, 3.0, 4.0])
         with pytest.raises(ValueError):
             BatchContainer.from_tensor(parent, n_shards=0)
+
+    def test_spread_tensor_negative_offset(self):
+        parent = Tensor([4], [1.0, 2.0, 3.0, 4.0])
+        with pytest.raises(ValueError, match="offset must be >= 0"):
+            SpreadTensor(parent, offset=-1, length=2)
+
+    def test_spread_tensor_negative_length(self):
+        parent = Tensor([4], [1.0, 2.0, 3.0, 4.0])
+        with pytest.raises(ValueError, match="length must be >= 0"):
+            SpreadTensor(parent, offset=0, length=-1)
+
+    def test_spread_tensor_out_of_bounds(self):
+        parent = Tensor([4], [1.0, 2.0, 3.0, 4.0])
+        with pytest.raises(ValueError, match="exceeds parent size"):
+            SpreadTensor(parent, offset=3, length=3)
 
 
 # ---------------------------------------------------------------------------

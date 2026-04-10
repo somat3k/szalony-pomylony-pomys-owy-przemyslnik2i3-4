@@ -77,9 +77,10 @@ class TransformChain:
 
     def remove(self, label: str) -> "TransformChain":
         """Remove the first transform whose label matches *label*."""
-        self._transforms = [
-            (n, f) for n, f in self._transforms if n != label
-        ]
+        for i, (name, _fn) in enumerate(self._transforms):
+            if name == label:
+                del self._transforms[i]
+                break
         return self
 
     # ------------------------------------------------------------------

@@ -9,7 +9,6 @@ shards and can scatter work across multiple CPU threads via
 
 from __future__ import annotations
 
-import threading
 import uuid
 from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any, Callable
@@ -46,6 +45,19 @@ class SpreadTensor:
         shard_index: int = 0,
         meta: dict[str, Any] | None = None,
     ) -> None:
+        if offset < 0:
+            raise ValueError(
+                f"SpreadTensor: offset must be >= 0, got {offset}"
+            )
+        if length < 0:
+            raise ValueError(
+                f"SpreadTensor: length must be >= 0, got {length}"
+            )
+        if offset + length > parent.size:
+            raise ValueError(
+                f"SpreadTensor: offset ({offset}) + length ({length}) = "
+                f"{offset + length} exceeds parent size ({parent.size})"
+            )
         self.id          = str(uuid.uuid4())[:8]
         self.parent      = parent
         self.offset      = offset

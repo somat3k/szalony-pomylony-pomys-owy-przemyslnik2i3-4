@@ -13,7 +13,6 @@ scaling policies (warmup, decay, cyclic, step).
 from __future__ import annotations
 
 import math
-import threading
 from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any, Callable
 
@@ -41,7 +40,6 @@ class MatrixEngine:
         self._workers = workers or (os.cpu_count() or 4)
         self._block_rows = max(1, block_rows)
         self._executor = ThreadPoolExecutor(max_workers=self._workers)
-        self._lock = threading.Lock()
 
     # ------------------------------------------------------------------
     # Internal serial matmul (no thread pool)
@@ -247,7 +245,7 @@ class ParameterMultiplier:
         return self.base_value  # fallback
 
     def step(self) -> float:
-        """Advance the internal counter and return the new value."""
+        """Return the value at the current step, then advance the internal counter."""
         v = self.value(self._step)
         self._step += 1
         return v
