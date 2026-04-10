@@ -10,27 +10,25 @@ import math
 import itertools
 from typing import Any, Callable, Iterable, Iterator
 
+from hololang.tensor.helpers import strides as _strides_fn
+from hololang.tensor.helpers import flat_index as _flat_index_fn
+from hololang.tensor.helpers import total_elements as _total_fn
+
 
 # ---------------------------------------------------------------------------
-# Helper: flat index ↔ multi-index
+# Private aliases kept for internal use (backwards-compatible)
 # ---------------------------------------------------------------------------
 
 def _strides(dims: list[int]) -> list[int]:
-    strides = [1] * len(dims)
-    for i in range(len(dims) - 2, -1, -1):
-        strides[i] = strides[i + 1] * dims[i + 1]
-    return strides
+    return _strides_fn(dims)
 
 
 def _flat_index(multi_idx: tuple[int, ...], strides: list[int]) -> int:
-    return sum(i * s for i, s in zip(multi_idx, strides))
+    return _flat_index_fn(multi_idx, strides)
 
 
 def _total(dims: list[int]) -> int:
-    result = 1
-    for d in dims:
-        result *= d
-    return result
+    return _total_fn(dims)
 
 
 # ---------------------------------------------------------------------------

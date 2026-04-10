@@ -12,40 +12,10 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any, Callable, Iterator
 
+from hololang.vm.block import Block
 
-# ---------------------------------------------------------------------------
-# Processing block
-# ---------------------------------------------------------------------------
-
-@dataclass
-class Block:
-    """A named processing unit in the block graph.
-
-    Parameters
-    ----------
-    name:
-        Unique name within the controller.
-    fn:
-        ``(*inputs, **params) -> output``  callable.
-    params:
-        Static parameters merged into every ``fn`` call.
-    """
-
-    name:    str
-    fn:      Callable
-    params:  dict[str, Any] = field(default_factory=dict)
-    enabled: bool = True
-    _output: Any = field(default=None, init=False, repr=False)
-
-    def execute(self, *inputs: Any) -> Any:
-        if not self.enabled:
-            return inputs[0] if inputs else None
-        self._output = self.fn(*inputs, **self.params)
-        return self._output
-
-    @property
-    def last_output(self) -> Any:
-        return self._output
+# Re-export for backwards compatibility
+__all__ = ["Block", "BlockController"]
 
 
 # ---------------------------------------------------------------------------
