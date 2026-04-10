@@ -147,36 +147,46 @@ session MySession {
 
 ```
 hololang/
-├── lang/           # Language front-end
-│   ├── lexer.py    # Tokenizer
-│   ├── ast_nodes.py# AST node definitions
-│   ├── parser.py   # Recursive-descent parser
+├── lang/               # Language front-end
+│   ├── lexer.py        # Tokenizer (90+ token types, multi-style comments)
+│   ├── ast_nodes.py    # 50+ AST node definitions
+│   ├── parser.py       # Recursive-descent parser
 │   └── interpreter.py  # Tree-walk interpreter
-├── tensor/         # Tensor subsystem
-│   ├── tensor.py   # N-dimensional Tensor
-│   ├── safetensor.py   # Bounds-checked SafeTensor
-│   ├── graph.py    # Computation graph (matmul, relu, normalize…)
-│   └── pool.py     # Pooled tensor runtime
-├── device/         # Device layer
-│   └── holographic.py  # LaserDevice, GalvanizedMirror, Sensor
-├── mesh/           # MDI canvas
-│   ├── tile.py     # Mesh tile with impulse connections
-│   ├── canvas.py   # Sparse 2-D tile canvas
-│   └── display.py  # Terminal / SVG / JSON rendering
-├── vm/             # Virtual machine
-│   ├── kernel.py   # Stack-based kernel + instruction set
-│   ├── controller.py   # Generative block controller
-│   └── runtime.py  # Pool runtime with replicable kernels
-├── network/        # Network layer
-│   ├── api.py      # Channel, Message, ApiEndpoint
-│   ├── websocket.py    # WebSocketConnection, WebSocketServer
-│   └── webhook.py  # Webhook, GrpcChannel, WebhookEvent
-├── docs/           # Documentation system
-│   ├── session.py  # Session lifecycle & artefacts
-│   ├── skills.py   # Skill registry
-│   └── directory.py    # Hierarchical DocDirectory
-├── runtime.py      # HoloRuntime orchestrator
-└── cli.py          # Command-line interface
+├── tensor/             # Tensor subsystem
+│   ├── helpers.py      # Row-major strides, flat-index, element-count utilities
+│   ├── tensor.py       # N-dimensional Tensor (pure Python, NumPy-optional)
+│   ├── safetensor.py   # Bounds-checked SafeTensor with CRC32 serialization
+│   ├── ops.py          # Activation & transform functions (relu, sigmoid, softmax…)
+│   ├── matrix.py       # Threaded MatrixEngine + ParameterMultiplier scheduler
+│   ├── transforms.py   # TransformChain (sequential) + ParallelTransformGroup
+│   ├── hyperparams.py  # HyperParameter + HyperParamSpace with scheduling
+│   ├── batch.py        # SpreadTensor shards + BatchContainer parallel apply
+│   ├── graph_node.py   # GraphNode (standalone DAG node)
+│   ├── graph.py        # ComputationGraph (matmul, relu, normalize, forward pass)
+│   └── pool.py         # TensorPool – named tensor registry with map/reduce
+├── device/             # Device layer
+│   └── holographic.py  # LaserDevice, GalvanizedMirror, Sensor (simulation)
+├── mesh/               # MDI canvas
+│   ├── tile.py         # Mesh tile with impulse connections
+│   ├── canvas.py       # Sparse 2-D tile canvas with impulse cycle
+│   └── display.py      # Terminal (ANSI) / SVG / JSON rendering
+├── vm/                 # Virtual machine
+│   ├── state.py        # KernelState enum (IDLE, RUNNING, SUSPENDED, FINISHED, ERROR)
+│   ├── instruction.py  # Instruction dataclass (opcode + operands)
+│   ├── block.py        # Block dataclass (named callable unit)
+│   ├── kernel.py       # Stack-based kernel with 26-opcode ISA + replication
+│   ├── controller.py   # BlockController – DAG-based generative pipeline
+│   └── runtime.py      # PoolRuntime – kernel pool with optional parallelism
+├── network/            # Network layer
+│   ├── api.py          # Channel, Message, ApiRoute, ApiEndpoint
+│   ├── websocket.py    # WebSocketConnection, WebSocketServer (in-process)
+│   └── webhook.py      # Webhook, GrpcChannel, WebhookEvent (in-process)
+├── docs/               # Documentation system
+│   ├── session.py      # Session lifecycle, artefacts & event log
+│   ├── skills.py       # SkillRegistry with 24 built-in skills
+│   └── directory.py    # Hierarchical DocDirectory with full-text search
+├── runtime.py          # HoloRuntime orchestrator (wires all subsystems)
+└── cli.py              # CLI: run / check / repl / info / skills / canvas
 
 examples/
 ├── hello_holo.hl       # Hello, World!
@@ -188,9 +198,11 @@ tests/
 ├── test_lang_lexer.py
 ├── test_lang_interpreter.py
 ├── test_tensor.py
+├── test_tensor_modules.py  # helpers, ops, matrix, transforms, hyperparams, batch, graph_node
 ├── test_device.py
 ├── test_mesh.py
 ├── test_vm.py
+├── test_vm_modules.py      # state, instruction, block
 ├── test_network.py
 ├── test_docs.py
 └── test_runtime.py
