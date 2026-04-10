@@ -13,35 +13,13 @@ import copy
 import threading
 import time
 import uuid
-from enum import Enum
 from typing import Any, Callable
 
+from hololang.vm.state import KernelState
+from hololang.vm.instruction import Instruction
 
-# ---------------------------------------------------------------------------
-# Kernel state
-# ---------------------------------------------------------------------------
-
-class KernelState(Enum):
-    IDLE      = "idle"
-    RUNNING   = "running"
-    SUSPENDED = "suspended"
-    FINISHED  = "finished"
-    ERROR     = "error"
-
-
-# ---------------------------------------------------------------------------
-# Kernel instruction
-# ---------------------------------------------------------------------------
-
-class Instruction:
-    """A single bytecode-level instruction."""
-
-    def __init__(self, opcode: str, operands: tuple = ()) -> None:
-        self.opcode   = opcode
-        self.operands = operands
-
-    def __repr__(self) -> str:
-        return f"Instruction({self.opcode}, {self.operands})"
+# Re-export for backwards compatibility
+__all__ = ["KernelState", "Instruction", "Kernel"]
 
 
 # ---------------------------------------------------------------------------

@@ -5,6 +5,9 @@ The graph supports:
 * Forward evaluation (topological sort)
 * Gradient accumulation (simple autograd for scalar losses)
 * Batched execution via :class:`~hololang.tensor.pool.TensorPool`
+
+:class:`GraphNode` is defined in :mod:`hololang.tensor.graph_node` and
+re-exported here for backwards compatibility.
 """
 
 from __future__ import annotations
@@ -13,46 +16,10 @@ import uuid
 from typing import Any, Callable
 
 from hololang.tensor.tensor import Tensor
+from hololang.tensor.graph_node import GraphNode  # canonical location
 
-
-# ---------------------------------------------------------------------------
-# Graph node
-# ---------------------------------------------------------------------------
-
-class GraphNode:
-    """A single node in a computation graph.
-
-    Parameters
-    ----------
-    op:
-        Name of the operation (e.g. ``"matmul"``, ``"add"``, ``"relu"``).
-    inputs:
-        List of parent :class:`GraphNode` objects.
-    fn:
-        Python callable ``(*tensors) -> Tensor`` that performs the op.
-    name:
-        Human-readable label for debugging / visualisation.
-    """
-
-    def __init__(
-        self,
-        op: str,
-        inputs: list["GraphNode"],
-        fn: Callable[..., Tensor],
-        name: str = "",
-    ) -> None:
-        self.id:       str = str(uuid.uuid4())[:8]
-        self.op:       str = op
-        self.inputs:   list["GraphNode"] = inputs
-        self.fn:       Callable[..., Tensor] = fn
-        self.name:     str = name or f"{op}_{self.id}"
-
-        # Populated after forward pass
-        self.output:   Tensor | None = None
-        self.grad:     Tensor | None = None
-
-    def __repr__(self) -> str:
-        return f"GraphNode(op={self.op!r}, name={self.name!r})"
+# Re-export so existing ``from hololang.tensor.graph import GraphNode`` works.
+__all__ = ["GraphNode", "ComputationGraph"]
 
 
 # ---------------------------------------------------------------------------
