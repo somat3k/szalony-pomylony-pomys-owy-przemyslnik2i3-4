@@ -20,7 +20,6 @@ Usage::
 
 from __future__ import annotations
 
-import threading
 from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Callable, Iterator
 
@@ -149,7 +148,6 @@ class ParallelTransformGroup:
         self.name = name
         self._branches: list[tuple[str, Transform]] = []
         self._workers = workers
-        self._lock = threading.Lock()
 
     def add(self, fn: Transform, label: str = "") -> "ParallelTransformGroup":
         name = label or getattr(fn, "__name__", repr(fn))

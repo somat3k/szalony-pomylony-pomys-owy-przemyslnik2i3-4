@@ -15,7 +15,6 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any, Callable
 
 from hololang.tensor.tensor import Tensor
-from hololang.tensor.helpers import total_elements
 
 
 # ---------------------------------------------------------------------------
